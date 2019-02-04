@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+
+<body>
+    <script>
+        let height = 2;
+        let weight = 60;
+        let bmi = weight / (height * height);
+        let resultat;
+        //Hvis bmi er under 19, skal der stå: undervigtig
+        if (bmi < 19) {
+            resultat = `Bmien er ${bmi}, fedmeklasse: undervægtig`;
+        }
+
+        //Er bmiet mellem 20 og 25, skal der stå: normal
+
+        if (bmi >= 20 && bmi < 25) {
+            resultat = `Bmien er ${bmi}, fedmeklasse: normal`;
+        }
+
+        //Er det større end (eller lig med)  200, skal der stå: Arealet er for stort
+
+        if (bmi >= 25 && bmi < 30) {
+            resultat = `Bmien er ${bmi}, fedmeklasse: Overvægtig`;
+        }
+
+        if (bmi >= 30 && bmi < 35) {
+            resultat = `Bmien er ${bmi}, fedmeklasse: Fed`;
+        }
+
+        if (bmi >= 35 && bmi < 40) {
+            resultat = `Bmien er ${bmi}, fedmeklasse: Svær fedme`;
+        }
+
+        if (bmi >= 40) {
+            resultat = `Bmien er ${bmi}, fedmeklasse: Ekstremt fed`;
+        }
+
+
+
+        console.log(resultat);
+    </script>
+</body>
+
+</html>
+<link rel="stylesheet" href="">
