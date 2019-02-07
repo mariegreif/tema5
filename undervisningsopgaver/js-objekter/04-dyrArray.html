@@ -61,7 +61,7 @@
         function start() {
             let dest = document.querySelector(".dyr");
             alleDyr.forEach(dyr => {
-                dest.innerHTML += `<div class="minedyr"><h3>${dyr.navn}</h3> <p>${dyr.type}</p> <p>${dyr.levested} <br> <img src="${dyr.billede}">`;
+                dest.innerHTML += `<div class="minedyr"><h3>${dyr.navn}</h3><img src="${dyr.billede}"> <p>${dyr.type}</p> <p>${dyr.levested} <br> `;
             })
 
             console.log(alleDyr);
