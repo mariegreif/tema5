@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        #single {
+            /*background-color: rgba(51, 39, 18, 0.46);*/
+
+            margin: auto;
+
+
+        }
+
+        #indhold {
+            min-height: 60vh;
+            background-color: white;
+            width: 80vw;
+            margin: 4rem auto;
+            text-align: center;
+
+        }
+
+        #luk button {
+            font-size: 2rem;
+            padding: 1rem 1rem;
+            cursor: pointer;
+            position: fixed;
+            top: 0;
+        }
+
+        button:hover {
+            background-color: red;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        img {
+            max-width: 100%
+        }
+
+        .ret {
+            background-color: lightgray;
+
+        }
+
+        @media only screen and (min-width: 768px) {
+            #liste {
+                grid-template-columns: 1fr 1fr;
+                margin: auto 50px;
+            }
+
+            #indhold {
+                min-height: 50vh;
+                width: 60vw;
+                margin: 4rem auto;
+            }
+        }
+
+        @media only screen and (min-width: 1024px) {
+            #liste {
+                grid-template-columns: 1fr 1fr 1fr;
+                margin: auto 100px;
+
+
+            }
+
+            #indhold {
+                min-height: 40vh;
+                width: 50vw;
+                margin: 4rem auto;
+            }
+
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <main id="single">
+        <div id="luk">
+            <button>
+                << </button> </div> <section id="indhold">
+                    </section>
+    </main>
+
+
+
+
+    <script>
+        let urlParams = new URLSearchParams(window.location.search)
+        let id = urlParams.get("id");
+        let alleRetter = [];
+        console.log(id);
+
+        document.addEventListener("DOMContentLoaded",
+            hentJson);
+
+        document.querySelector("#luk button").addEventListener("click", () => {
+            location.href = "bistroBabushka-single.html"
+
+        })
+
+
+
+
+
+
+
+        async function hentJson() {
+            const myJson = await fetch("https://mandalskeawebspace.dk/claude_php/clean_up_spreadsheet.php?id=1jxxxFoWBuMJ1qhQ9BQIAyKHmP38XtAF9_sQr0xo5JLo");
+            alleRetter = await myJson.json();
+            visRetter();
+        }
+
+        function visRetter() {
+            let dest = document.querySelector("#indhold");
+            dest.innerHTML = "";
+            alleRetter.forEach(ret => {
+                if (ret.id == id) {
+                    //læg indholdet i en variabel
+                    let template = `
+<article class="ret">
+<h2>${ret.navn}</h2>
+ <img src="imgs/large/${ret.billede}.jpg" alt="${ret.navn}">
+<p>${ret.lang}</p>
+<p>${ret.pris} kr. </p>
+    </article>
+`;
+                    //åben popup
+                    dest.insertAdjacentHTML("beforeend", template);
+
+                }
+
+
+            })
+
+        } //function start slut
+    </script>
+
+</body>
+
+
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: auto;
+        }
+
+        img {
+            width: 100%;
+
+        }
+
+        #liste {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 3rem;
+
+        }
+
+        #popup {
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            background-color: rgba(51, 39, 18, 0.46);
+            display: none;
+            overflow: scroll;
+        }
+
+
+        #luk {
+            position: fixed;
+            right: 2rem;
+        }
+
+        #luk button {
+            font-size: 2rem;
+            padding: 1rem 1rem;
+        }
+
+        @media only screen and (min-width: 768px) {
+            #liste {
+                grid-template-columns: 1fr 1fr;
+                margin: auto 50px;
+            }
+
+            #indhold {
+                min-height: 50vh;
+                width: 60vw;
+                margin: 4rem auto;
+            }
+        }
+
+        @media only screen and (min-width: 1024px) {
+            #liste {
+                grid-template-columns: 1fr 1fr 1fr;
+                margin: auto 100px;
+
+
+            }
+
+            #indhold {
+                min-height: 40vh;
+                width: 50vw;
+                margin: 4rem auto;
+            }
+
+
+        }
+
+        nav {
+            text-align: center;
+            margin: auto;
+
+        }
+
+        .valgt {
+            background-color: red;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        .ret {
+            background-color: lightgray;
+
+        }
+
+        button {
+            display: inline-block;
+            background-color: white;
+            padding: 10px;
+        }
+
+        button:hover {
+            background-color: red;
+        }
+
+
+        header {
+            display: grid;
+        }
+
+        figure {
+            background-color: orange;
+            margin: 0;
+        }
+
+        footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: gray;
+            color: white;
+            text-align: center;
+            margin-top: 2vw;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="popup">
+        <div id="luk">
+            <button>X</button>
+        </div>
+        <div id="indhold"></div>
+    </div>
+
+
+    <header>
+        <figure>
+            <img src="http://mabe-kea.dk/f18/babushka/imgs/red_star.svg" alt="top-header">
+        </figure>
+
+        <nav>
+            <button class="filter valgt" data-hold="alle">Alle</button>
+            <button class="filter" data-hold="forretter">Foretter</button>
+            <button class="filter" data-hold="hovedretter">Hovedretter</button>
+            <button class="filter" data-hold="desserter">Desserter</button>
+            <button class="filter" data-hold="drikkevarer">Drikkevarer</button>
+            <button class="filter" data-hold="sideorders">Sideorders</button>
+
+
+        </nav>
+    </header>
+    <main>
+        <h1>Menu</h1>
+
+
+        <section id="liste">
+        </section>
+    </main>
+
+    <footer>
+        <p>Addresse:<br>Grønnegade 97 <br> 1234 København K</p>
+        <p>Åbningstider: <br> Mandag-fredag 10.30-22.00 <br>Lørdag 12.00-23.00</p>
+    </footer>
+
+
+    <script>
+        let alleRetter = [];
+        let filter = "alle";
+        document.addEventListener("DOMContentLoaded",
+            start);
+
+        function start() {
+            let dest = document.querySelector("#liste");
+            async function getJson() {
+                let jsonData = await fetch("https://mandalskeawebspace.dk/claude_php/clean_up_spreadsheet.php?id=1jxxxFoWBuMJ1qhQ9BQIAyKHmP38XtAF9_sQr0xo5JLo");
+                alleRetter = await jsonData.json();
+                alleRetter.sort((a, b) => {
+                    return (a.pris - b.pris);
+                });
+
+                visRetter();
+            }
+
+            function visRetter() {
+
+                dest.innerHTML = "";
+                alleRetter.forEach(ret => {
+                    if (filter == "alle" || filter == ret.kategori) {
+                        let template =
+                            `<article class="ret">
+                                <img src="imgs/small/${ret.billede}-sm.jpg" alt="${ret.navn}">
+                                <h2>${ret.navn}</h2>
+                                <p>${ret.kort}</p>
+                                <p>${ret.pris} kr. </p>
+                            </article>
+                        `;
+                        dest.insertAdjacentHTML("beforeend", template);
+                        dest.lastElementChild.addEventListener("click", visSingle);
+
+                        function visSingle() {
+                            document.querySelector("#indhold").innerHTML = `<article class="ret">
+                                <img src="imgs/large/${ret.billede}.jpg" alt="${ret.navn}">
+                                <h2>${ret.navn}</h2>
+                                <p>${ret.lang}</p>
+                                <p>${ret.pris} kr. </p>
+                            </article>
+                        `;
+
+                            document.querySelector("#popup").style.display = "block";
+                            document.querySelector("#popup #luk").addEventListener("click", close);
+                        }
+
+                        function close() {
+                            document.querySelector("#popup").style.display = "none";
+                        }
+                    }
+                })
+            }
+            getJson();
+            document.querySelectorAll(".filter").forEach(but => {
+                but.addEventListener("click", filtrering);
+            })
+
+            function filtrering() {
+                document.querySelectorAll(".filter").forEach(but => {
+                    but.classList.remove("valgt");
+                });
+                this.classList.add("valgt");
+                document.querySelector("h1").textContent = this.textContent;
+                filter = this.getAttribute("data-hold");
+                visRetter();
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
